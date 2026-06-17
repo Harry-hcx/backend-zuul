@@ -102,7 +102,7 @@ async def move_player(db: AsyncSession, player_id: int, direction: str):
     await room_history_store.push_room_history(db, player_id, player.player_backpack_id or 0, room.room_id)
 
     player.player_room_id = target_room_id
-    player.player_stamina -= 2
+    player.player_stamina -= 10
     await db.commit()
 
     return Result.success(MoveResponse(room_id=target_room_id), "success")
@@ -149,7 +149,7 @@ async def back_player(db: AsyncSession, player_id: int):
     previous_room_id = await room_history_store.pop_room_history(db, player_id, player.player_backpack_id or 0)
 
     player.player_room_id = previous_room_id
-    player.player_stamina -= 2
+    player.player_stamina -= 10
     await db.commit()
 
     return Result.success(TransResponse(room_id=previous_room_id), "success")
@@ -163,7 +163,7 @@ async def home_player(db: AsyncSession, player_id: int):
     await room_history_store.push_room_history(db, player_id, player.player_backpack_id or 0, player.player_room_id)
 
     player.player_room_id = 1
-    player.player_stamina -= 2
+    player.player_stamina -= 10
     await db.commit()
 
     return Result.success(None, "回城成功")

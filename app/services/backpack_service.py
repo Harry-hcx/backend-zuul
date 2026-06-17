@@ -74,7 +74,7 @@ async def pick_item(db: AsyncSession, player_id: int, item_id: int):
         sa_delete(RoomItem).where(RoomItem.room_id == player.player_room_id, RoomItem.item_id == item_id)
     )
 
-    player.player_stamina -= 2
+    player.player_stamina -= 5
     await db.commit()
     await update_score(db, player_id)
 
@@ -100,7 +100,7 @@ async def throw_item(db: AsyncSession, player_id: int, item_id: int):
         return Result.error(404, "item not found in backpack")
 
     db.add(RoomItem(room_id=player.player_room_id, item_id=item_id))
-    player.player_stamina -= 2
+    player.player_stamina -= 5
     await db.commit()
     await update_score(db, player_id)
 
@@ -133,13 +133,13 @@ async def use_item(db: AsyncSession, player_id: int, item_id: int):
     await db.delete(item)
 
     if item_name == "魔法饼干":
-        player.player_score += item_value
+        player.player_score += 50
         backpack = await db.get(Backpack, player.player_backpack_id)
         if backpack:
             backpack.backpack_size += 10
     elif item_name == "体力药水":
         player.player_score += item_value
-        player.player_stamina += item_value
+        player.player_stamina = min(player.player_stamina + 20, 200)
     else:
         player.player_stamina -= 2
         await db.commit()
