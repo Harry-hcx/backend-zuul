@@ -133,12 +133,12 @@ async def use_item(db: AsyncSession, player_id: int, item_id: int):
     await db.delete(item)
 
     if item_name == "魔法饼干":
-        player.player_score += 50
+        player.player_bonus_score += 50
         backpack = await db.get(Backpack, player.player_backpack_id)
         if backpack:
             backpack.backpack_size += 10
     elif item_name == "体力药水":
-        player.player_score += item_value
+        player.player_bonus_score += item_value
         player.player_stamina = min(player.player_stamina + 20, 200)
     else:
         player.player_stamina -= 2
@@ -147,5 +147,6 @@ async def use_item(db: AsyncSession, player_id: int, item_id: int):
         return Result.success(None, "item used and removed successfully")
 
     await db.commit()
+    await update_score(db, player_id)
 
     return Result.success(None, "item used and removed successfully")

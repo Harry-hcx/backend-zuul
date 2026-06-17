@@ -41,6 +41,7 @@ async def save_game(db: AsyncSession, player_id: int):
         player_id=player_id,
         save_time=datetime.now(),
         player_score=player.player_score,
+        player_bonus_score=player.player_bonus_score,
         player_stamina=player.player_stamina,
         player_room_id=player.player_room_id,
         player_backpack_id=player.player_backpack_id,
@@ -60,6 +61,7 @@ async def read_game(db: AsyncSession, save_id: int):
         return Result.error(404, "player not found for this save record")
 
     player.player_score = record.player_score
+    player.player_bonus_score = record.player_bonus_score or 0
     player.player_stamina = record.player_stamina
     player.player_room_id = record.player_room_id
     player.player_backpack_id = record.player_backpack_id
@@ -98,6 +100,7 @@ async def start_new_game(db: AsyncSession, player_id: int):
     await db.flush()
 
     player.player_score = 0
+    player.player_bonus_score = 0
     player.player_stamina = 200
     player.player_backpack_id = new_backpack.backpack_id
     player.player_room_id = 1

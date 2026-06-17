@@ -11,6 +11,7 @@ class SaveRecord(Base):
     player_id = Column(Integer, nullable=False)
     save_time = Column(DateTime, nullable=False, default=datetime.now)
     player_score = Column(Integer, nullable=True)
+    player_bonus_score = Column(Integer, nullable=True, default=0)
     player_stamina = Column(Integer, nullable=True)
     player_room_id = Column(Integer, nullable=True)
     player_backpack_id = Column(Integer, nullable=True)

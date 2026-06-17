@@ -175,6 +175,6 @@ async def update_score(db: AsyncSession, player_id: int):
             SELECT IFNULL(SUM(i.item_value), 0)
             FROM backpack_item bi JOIN item i ON bi.item_id = i.item_id
             WHERE bi.backpack_id = player.player_backpack_id
-        ) WHERE player_id = :pid
+        ) + player.player_bonus_score WHERE player_id = :pid
     """), {"pid": player_id})
     await db.commit()
