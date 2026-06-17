@@ -134,7 +134,11 @@ async def use_item(db: AsyncSession, player_id: int, item_id: int):
 
     if item_name == "魔法饼干":
         player.player_score += item_value
+        backpack = await db.get(Backpack, player.player_backpack_id)
+        if backpack:
+            backpack.backpack_size += 10
     elif item_name == "体力药水":
+        player.player_score += item_value
         player.player_stamina += item_value
     else:
         player.player_stamina -= 2
