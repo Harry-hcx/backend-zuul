@@ -119,6 +119,7 @@ async def use_item(db: AsyncSession, player_id: int, item_id: int):
         return Result.error(404, "item not found")
 
     item_name = item.item_name
+    item_value = item.item_value
 
     result = await db.execute(
         sa_delete(BackpackItem).where(
@@ -132,15 +133,15 @@ async def use_item(db: AsyncSession, player_id: int, item_id: int):
     await db.delete(item)
 
     if item_name == "魔法饼干":
-        backpack = await db.get(Backpack, player.player_backpack_id)
-        if backpack:
-            backpack.backpack_size += 10
+        player.player_score += item_value
     elif item_name == "体力药水":
-        player.player_stamina += 10
+        player.player_stamina += item_value
     else:
         player.player_stamina -= 2
+        await db.commit()
+        await update_score(db, player_id)
+        return Result.success(None, "item used and removed successfully")
 
     await db.commit()
-    await update_score(db, player_id)
 
     return Result.success(None, "item used and removed successfully")
